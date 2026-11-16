@@ -1,0 +1,236 @@
+[
+  {
+    "id": "visible-monday",
+    "split": "visible",
+    "group": "valid",
+    "critical": false,
+    "input": {
+      "loan_status": "ACTIVE",
+      "requested_principal_cents": 10000,
+      "outstanding_principal_cents": 100000,
+      "request_date": "2026-06-01",
+      "requested_settlement_date": "2026-06-15"
+    },
+    "expected": {
+      "status": "SCHEDULED",
+      "reason": null,
+      "settlement_date": "2026-06-15"
+    }
+  },
+  {
+    "id": "visible-closed",
+    "split": "visible",
+    "group": "loan status",
+    "critical": false,
+    "input": {
+      "loan_status": "CLOSED",
+      "requested_principal_cents": 10000,
+      "outstanding_principal_cents": 100000,
+      "request_date": "2026-06-01",
+      "requested_settlement_date": "2026-06-15"
+    },
+    "expected": {
+      "status": "REJECTED",
+      "reason": "LOAN_NOT_ACTIVE",
+      "settlement_date": null
+    }
+  },
+  {
+    "id": "visible-overpayment",
+    "split": "visible",
+    "group": "principal",
+    "critical": false,
+    "input": {
+      "loan_status": "ACTIVE",
+      "requested_principal_cents": 100001,
+      "outstanding_principal_cents": 100000,
+      "request_date": "2026-06-01",
+      "requested_settlement_date": "2026-06-15"
+    },
+    "expected": {
+      "status": "REJECTED",
+      "reason": "INVALID_AMOUNT",
+      "settlement_date": null
+    }
+  },
+  {
+    "id": "holdout-saturday",
+    "split": "holdout",
+    "group": "calendar",
+    "critical": false,
+    "input": {
+      "loan_status": "ACTIVE",
+      "requested_principal_cents": 10000,
+      "outstanding_principal_cents": 100000,
+      "request_date": "2026-06-01",
+      "requested_settlement_date": "2026-06-20"
+    },
+    "expected": {
+      "status": "SCHEDULED",
+      "reason": null,
+      "settlement_date": "2026-06-22"
+    }
+  },
+  {
+    "id": "holdout-sunday",
+    "split": "holdout",
+    "group": "calendar",
+    "critical": false,
+    "input": {
+      "loan_status": "ACTIVE",
+      "requested_principal_cents": 10000,
+      "outstanding_principal_cents": 100000,
+      "request_date": "2026-06-01",
+      "requested_settlement_date": "2026-06-21"
+    },
+    "expected": {
+      "status": "SCHEDULED",
+      "reason": null,
+      "settlement_date": "2026-06-22"
+    }
+  },
+  {
+    "id": "holdout-year-boundary",
+    "split": "holdout",
+    "group": "calendar",
+    "critical": false,
+    "input": {
+      "loan_status": "ACTIVE",
+      "requested_principal_cents": 10000,
+      "outstanding_principal_cents": 100000,
+      "request_date": "2026-12-18",
+      "requested_settlement_date": "2027-01-01"
+    },
+    "expected": {
+      "status": "SCHEDULED",
+      "reason": null,
+      "settlement_date": "2027-01-01"
+    }
+  },
+  {
+    "id": "holdout-leap-day",
+    "split": "holdout",
+    "group": "calendar",
+    "critical": false,
+    "input": {
+      "loan_status": "ACTIVE",
+      "requested_principal_cents": 10000,
+      "outstanding_principal_cents": 100000,
+      "request_date": "2028-02-15",
+      "requested_settlement_date": "2028-02-29"
+    },
+    "expected": {
+      "status": "SCHEDULED",
+      "reason": null,
+      "settlement_date": "2028-02-29"
+    }
+  },
+  {
+    "id": "holdout-short-notice",
+    "split": "holdout",
+    "group": "notice",
+    "critical": true,
+    "input": {
+      "loan_status": "ACTIVE",
+      "requested_principal_cents": 10000,
+      "outstanding_principal_cents": 100000,
+      "request_date": "2026-06-01",
+      "requested_settlement_date": "2026-06-14"
+    },
+    "expected": {
+      "status": "REJECTED",
+      "reason": "NOTICE_TOO_SHORT",
+      "settlement_date": null
+    }
+  },
+  {
+    "id": "holdout-inactive-precedence",
+    "split": "holdout",
+    "group": "loan status",
+    "critical": true,
+    "input": {
+      "loan_status": "SUSPENDED",
+      "requested_principal_cents": -1,
+      "outstanding_principal_cents": 100000,
+      "request_date": "bad",
+      "requested_settlement_date": "2026-06-15"
+    },
+    "expected": {
+      "status": "REJECTED",
+      "reason": "LOAN_NOT_ACTIVE",
+      "settlement_date": null
+    }
+  },
+  {
+    "id": "holdout-zero-precedence",
+    "split": "holdout",
+    "group": "principal",
+    "critical": true,
+    "input": {
+      "loan_status": "ACTIVE",
+      "requested_principal_cents": 0,
+      "outstanding_principal_cents": 100000,
+      "request_date": "bad",
+      "requested_settlement_date": "2026-06-15"
+    },
+    "expected": {
+      "status": "REJECTED",
+      "reason": "INVALID_AMOUNT",
+      "settlement_date": null
+    }
+  },
+  {
+    "id": "holdout-full-balance",
+    "split": "holdout",
+    "group": "principal",
+    "critical": false,
+    "input": {
+      "loan_status": "ACTIVE",
+      "requested_principal_cents": 100000,
+      "outstanding_principal_cents": 100000,
+      "request_date": "2026-06-01",
+      "requested_settlement_date": "2026-06-15"
+    },
+    "expected": {
+      "status": "SCHEDULED",
+      "reason": null,
+      "settlement_date": "2026-06-15"
+    }
+  },
+  {
+    "id": "holdout-invalid-date",
+    "split": "holdout",
+    "group": "calendar",
+    "critical": true,
+    "input": {
+      "loan_status": "ACTIVE",
+      "requested_principal_cents": 10000,
+      "outstanding_principal_cents": 100000,
+      "request_date": "2026-06-01",
+      "requested_settlement_date": "2026-06-31"
+    },
+    "expected": {
+      "status": "REJECTED",
+      "reason": "INVALID_DATE",
+      "settlement_date": null
+    }
+  },
+  {
+    "id": "holdout-date-format",
+    "split": "holdout",
+    "group": "calendar",
+    "critical": false,
+    "input": {
+      "loan_status": "ACTIVE",
+      "requested_principal_cents": 10000,
+      "outstanding_principal_cents": 100000,
+      "request_date": "2026-06-01",
+      "requested_settlement_date": "20260616"
+    },
+    "expected": {
+      "status": "REJECTED",
+      "reason": "INVALID_DATE",
+      "settlement_date": null
+    }
+  }
+]

@@ -1,0 +1,39 @@
+{
+  "mode": "live",
+  "baseline": "tools-baseline",
+  "repetitions": 12,
+  "seed": 42,
+  "slo_s": 20,
+  "request_timeout_s": 30,
+  "min_pass_rate": 0.95,
+  "min_on_time_rate": 0.90,
+  "max_critical_failures": 0,
+  "variants": [
+    {
+      "id": "tools-baseline",
+      "model": "replace-with-model-id",
+      "workflow": "tools",
+      "endpoint": "http://127.0.0.1:8000/v1/chat/completions",
+      "runtime": "record-runtime-and-version",
+      "hardware": "record-hardware",
+      "concurrency": 1,
+      "repair_attempts": 1,
+      "max_model_calls": 8,
+      "parameters": {"max_completion_tokens": 1800},
+      "pricing": {"hourly": 1, "utilization": 0.6}
+    },
+    {
+      "id": "inline-spec",
+      "model": "replace-with-model-id",
+      "workflow": "inline",
+      "endpoint": "http://127.0.0.1:8000/v1/chat/completions",
+      "runtime": "record-runtime-and-version",
+      "hardware": "record-hardware",
+      "concurrency": 1,
+      "repair_attempts": 1,
+      "max_model_calls": 8,
+      "parameters": {"max_completion_tokens": 1800},
+      "pricing": {"hourly": 1, "utilization": 0.6}
+    }
+  ]
+}

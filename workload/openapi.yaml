@@ -1,0 +1,44 @@
+openapi: 3.1.0
+info:
+  title: Synthetic mortgage servicing
+  version: 1.0.0
+paths:
+  /early-repayments/evaluate:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [loan_status, requested_principal_cents, outstanding_principal_cents, request_date, requested_settlement_date]
+              properties:
+                loan_status:
+                  enum: [ACTIVE, CLOSED, SUSPENDED]
+                requested_principal_cents:
+                  type: integer
+                outstanding_principal_cents:
+                  type: integer
+                  minimum: 0
+                request_date:
+                  type: string
+                requested_settlement_date:
+                  type: string
+      responses:
+        '200':
+          description: Scheduling assessment
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [status, reason, settlement_date]
+                properties:
+                  status:
+                    enum: [REJECTED, SCHEDULED]
+                  reason:
+                    enum: [LOAN_NOT_ACTIVE, INVALID_AMOUNT, INVALID_DATE, NOTICE_TOO_SHORT, null]
+                  settlement_date:
+                    type: [string, 'null']
+                    format: date
